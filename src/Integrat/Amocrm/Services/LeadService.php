@@ -2,6 +2,7 @@
 
 namespace Integrat\Amocrm\Services;
 
+use Integrat\Amocrm\Models\LeadModel;
 use Integrat\Amocrm\Request;
 
 class LeadService
@@ -26,26 +27,31 @@ class LeadService
         return [];
     }
 
-    public function getById(int $id): array
+    public function findById(int $id): ?LeadModel
     {
         $result = $this->request->get('/leads/' . $id);
 
-        if (!empty($result)) {
-            return $result;
+        if (empty($result)) {
+            return null;
         }
 
-        return [];
+        return new LeadModel($result);
     }
 
-    public function getByField(string $value): array
+    public function findByField(string $fieldValue): array
     {
-        $result = $this->request->get('/leads?query=' . $value);
+        $result = $this->request->get('/leads?query=' . $fieldValue);
 
-        if (!empty($result)) {
-            return $result;
+        if (empty($result) || empty($result['_embedded']['leads'])) {
+            return [];
         }
 
-        return [];
+        $arrayModels = [];
+        foreach($result['_embedded']['leads'] as $lead) {
+            $arrayModels[] = new LeadModel($lead);
+        }
+
+        return $arrayModels;
     }
 
     /**

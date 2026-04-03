@@ -33,7 +33,7 @@ class UserService
         $allActiveUsers = [];
         $page = 1;
         
-        while (true) {
+        while ($page < 15) {
             $result = $this->request->get("/users?page={$page}&limit=250");
             
             if (empty($result) || empty($result['_embedded']['users'])) {

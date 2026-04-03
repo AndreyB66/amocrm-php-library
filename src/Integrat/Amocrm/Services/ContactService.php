@@ -2,6 +2,7 @@
 
 namespace Integrat\Amocrm\Services;
 
+use Integrat\Amocrm\Models\ContactModel;
 use Integrat\Amocrm\Request;
 
 class ContactService
@@ -26,32 +27,37 @@ class ContactService
         return [];
     }
 
-    public function getById(int $contactId): array
+    public function findById(int $contactId): ?ContactModel
     {
         $result = $this->request->get('/contacts/' . $contactId);
 
-        if (!empty($result)) {
-            return $result;
+        if (empty($result)) {
+            return null;
         }
 
-        return [];
+        return new ContactModel($result);
     }
 
-    public function getByField(string $value): array
+    public function findByField(string $fieldValue): array
     {
-        $result = $this->request->get('/contacts?query=' . $value);
+        $result = $this->request->get('/contacts?query=' . $fieldValue);
 
-        if (!empty($result)) {
-            return $result;
+        if (empty($result) || empty($result['_embedded']['contacts'])) {
+            return [];
         }
 
-        return [];
+        $arrayModels = [];
+        foreach($result['_embedded']['contacts'] as $contact) {
+            $arrayModels[] = new ContactModel($contact);
+        }
+
+        return $arrayModels;
     }
 
     public function findActiveLead(int $contactId): array
     {
         $result = $this->request->get('/contacts/' . $contactId . '/links');
-        if (empty($result)) {
+        if (empty($result) || !isset($result['_embedded']['links'])) {
             return [];
         }
 
@@ -89,7 +95,7 @@ class ContactService
     public function findAllLead(int $contactId): array
     {
         $result = $this->request->get('/contacts/' . $contactId . '/links');
-        if (empty($result)) {
+        if (empty($result) || !isset($result['_embedded']['links'])) {
             return [];
         }
 

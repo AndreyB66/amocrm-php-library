@@ -2,6 +2,7 @@
 
 namespace Integrat\Amocrm\Services;
 
+use Integrat\Amocrm\Models\CompanyModel;
 use Integrat\Amocrm\Request;
 
 class CompanyService
@@ -26,32 +27,37 @@ class CompanyService
         return [];
     }
 
-    public function getById(int $companyId): array
+    public function findById(int $companyId): ?CompanyModel
     {
         $result = $this->request->get('/companies/' . $companyId);
 
-        if (!empty($result)) {
-            return $result;
+        if (empty($result)) {
+            return null;
         }
 
-        return [];
+        return new CompanyModel($result);
     }
 
-    public function getByField(string $value): array
+    public function findByField(string $fieldValue): array
     {
-        $result = $this->request->get('/companies?query=' . $value);
+        $result = $this->request->get('/companies?query=' . $fieldValue);
 
-        if (!empty($result)) {
-            return $result;
+        if (empty($result) || empty($result['_embedded']['companies'])) {
+            return [];
         }
 
-        return [];
+        $arrayModels = [];
+        foreach($result['_embedded']['companies'] as $company) {
+            $arrayModels[] = new CompanyModel($company);
+        }
+
+        return $arrayModels;
     }
 
     public function findActiveLead(int $companyId): array
     {
         $result = $this->request->get('/companies/' . $companyId . '/links');
-        if (empty($result)) {
+        if (empty($result) || !isset($result['_embedded']['links'])) {
             return [];
         }
 
@@ -89,7 +95,7 @@ class CompanyService
     public function findAllLead(int $companyId): array
     {
         $result = $this->request->get('/companies/' . $companyId . '/links');
-        if (empty($result)) {
+        if (empty($result) || !isset($result['_embedded']['links'])) {
             return [];
         }
 

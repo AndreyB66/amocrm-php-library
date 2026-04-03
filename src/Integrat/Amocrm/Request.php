@@ -55,8 +55,7 @@ class Request
             // error_log(print_r($response, true));
 
             if ($httpCode == 400 || $httpCode == 401 || $httpCode == 403) {
-                error_log(print_r($response, true));
-                return [];
+                throw new \Exception(print_r($response, true));
             }
 
             if ($response !== false && $httpCode < 500) {

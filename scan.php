@@ -2,6 +2,7 @@
 
 $excludeDirs = [
     'vendor',
+    '.git'
 ];
 
 $excludeFiles = [

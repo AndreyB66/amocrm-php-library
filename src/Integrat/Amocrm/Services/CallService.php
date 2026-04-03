@@ -31,7 +31,7 @@ class CallService
      * @param string $recordLink // Ссылка на запись разговора
      * @param string $result // Статус завершения звонка (Answer, busy ...)
      * @param int $responsibleUserId // ID ответственного из amoCRM
-     * @return int
+     * @return array
      */
     public function addOutbound(
         int $duration,
@@ -67,7 +67,7 @@ class CallService
      * @param string $recordLink // Ссылка на запись разговора
      * @param string $result // Статус завершения звонка (Answer, busy ...)
      * @param int $responsibleUserId // ID ответственного из amoCRM
-     * @return int
+     * @return array
      */
     public function addInbound(
         int $duration,
