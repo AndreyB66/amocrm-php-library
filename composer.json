@@ -1,0 +1,23 @@
+{
+    "name": "integrat/amocrm-library",
+    "description": "Библиотека для работы с amoCRM",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Integrat\\Amocrm": "src/Integrat/Amocrm/"
+        }
+    },
+    "require": {
+        "php": "^8.0",
+        "ext-curl": "*",
+        "ext-json": "*"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Andrey",
+            "email": "andrey.b@integrat.pro"
+        }
+    ],
+    "minimum-stability": "stable"
+}
