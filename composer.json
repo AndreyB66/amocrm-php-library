@@ -1,10 +1,10 @@
 {
     "name": "integrat/amocrm-library",
-    "description": "Библиотека для работы с amoCRM",
+    "description": "Библиотека для работы с amoCRM API v4",
     "type": "library",
     "autoload": {
         "psr-4": {
-            "Integrat\\Amocrm": "src/Integrat/Amocrm/"
+            "Integrat\\Amocrm\\": "src/Integrat/Amocrm/"
         }
     },
     "require": {
