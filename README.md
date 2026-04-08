@@ -5,6 +5,12 @@
 
 ```json
 {
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Integrat\\Amocrm\\": "vendor/integrat/amocrm-library/src/Integrat/Amocrm/" // Необходимо явно указать
+        }
+    },
     "repositories": [
         {
             "type": "vcs",
@@ -23,10 +29,21 @@
 
 **1. Добавьте репозиторий в `composer.json`:**
 ```json
-"repositories": [
-    {
-        "type": "vcs",
-        "url": "https://github.com/integrat/amocrm-library"
+{
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Integrat\\Amocrm\\": "vendor/integrat/amocrm-library/src/Integrat/Amocrm/" // Необходимо явно указать
+        }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/integrat/amocrm-library"
+        }
+    ],
+    "require": {
+        "integrat/amocrm-library": "^1.0"
     }
-]
+}
 ```
