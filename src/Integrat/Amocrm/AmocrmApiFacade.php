@@ -2,10 +2,10 @@
 
 namespace Integrat\Amocrm;
 
+use Integrat\Amocrm\Repositories\CompanyRepository;
+use Integrat\Amocrm\Repositories\ContactRepository;
+use Integrat\Amocrm\Repositories\LeadRepository;
 use Integrat\Amocrm\Services\CallService;
-use Integrat\Amocrm\Services\CompanyService;
-use Integrat\Amocrm\Services\ContactService;
-use Integrat\Amocrm\Services\LeadService;
 use Integrat\Amocrm\Services\LinkService;
 use Integrat\Amocrm\Services\NoteService;
 use Integrat\Amocrm\Services\PipelineService;
@@ -17,9 +17,9 @@ class AmocrmApiFacade
 {
     private Request $request;
     private CallService $callService;
-    private CompanyService $companyService;
-    private ContactService $contactService;
-    private LeadService $leadService;
+    private CompanyRepository $companyRepository;
+    private ContactRepository $contactRepository;
+    private LeadRepository $leadRepository;
     private LinkService $linkService;
     private NoteService $noteService;
     private PipelineService $pipelineService;
@@ -31,9 +31,9 @@ class AmocrmApiFacade
     {
         $this->request = new Request($domain, $apiKey);
         $this->callService = new CallService($this->request);
-        $this->companyService = new CompanyService($this->request);
-        $this->contactService = new ContactService($this->request);
-        $this->leadService = new LeadService($this->request);
+        $this->companyRepository = new CompanyRepository($this->request);
+        $this->contactRepository = new ContactRepository($this->request);
+        $this->leadRepository = new LeadRepository($this->request);
         $this->linkService = new LinkService($this->request);
         $this->noteService = new NoteService($this->request);
         $this->pipelineService = new PipelineService($this->request);
@@ -47,19 +47,19 @@ class AmocrmApiFacade
         return $this->callService;
     }
 
-    public function companies(): CompanyService
+    public function companies(): CompanyRepository
     {
-        return $this->companyService;
+        return $this->companyRepository;
     }
     
-    public function contacts(): ContactService
+    public function contacts(): ContactRepository
     {
-        return $this->contactService;
+        return $this->contactRepository;
     }
 
-    public function leads(): LeadService
+    public function leads(): LeadRepository
     {
-        return $this->leadService;
+        return $this->leadRepository;
     }
 
     public function links(): LinkService

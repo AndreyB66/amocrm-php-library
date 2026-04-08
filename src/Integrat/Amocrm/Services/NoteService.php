@@ -16,7 +16,7 @@ class NoteService
     public function create(string $entityType, int $entityId, array $data): array
     {
         if (!in_array($entityType, ['leads', 'contacts', 'companies'])) {
-            throw new \Exception('Передан не верный тип сущности для прикрепления примечания');
+            throw new \InvalidArgumentException('Передан не верный тип сущности для прикрепления примечания');
         }
 
         $result = $this->request->post('/' . $entityType . '/' . $entityId. '/notes', $data);

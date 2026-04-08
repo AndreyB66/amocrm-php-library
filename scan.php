@@ -2,15 +2,16 @@
 
 $excludeDirs = [
     'vendor',
-    '.git'
+    '.git',
 ];
 
 $excludeFiles = [
     'scan.txt',
     'scan.php',
     'composer.lock',
-    'env.php',
+    '.env',
     'README.md',
+    'php_errors.log',
 ];
 
 // Убираем ограничения времени выполнения и памяти
