@@ -2,61 +2,57 @@
 
 namespace Integrat\Amocrm\Models;
 
-/**
- * @property int $id
- * @property string $name
- * @property int $price
- * @property int $responsible_user_id
- * @property int $group_id
- * @property int $status_id
- * @property int $pipeline_id
- * @property int|null $loss_reason_id
- * @property int $created_by
- * @property int $updated_by
- * @property int $created_at
- * @property int $updated_at
- * @property int|null $closed_at
- * @property int|null $closest_task_at
- * @property bool $is_deleted
- * @property array $custom_fields_values
- * @property int|null $score
- * @property int $account_id
- * @property int $labor_cost
- * @property bool $is_price_computed
- * @property array $_links
- * @property array $_embedded
- */
 class LeadModel
 {
-    private array $attributes = [];
+    public ?int $id;
+    public ?string $name;
+    public ?int $price;
+    public ?int $priceWithMinorUnits;
+    public ?int $responsibleUserId;
+    public ?int $groupId;
+    public ?int $statusId;
+    public ?int $pipelineId;
+    public ?int $lossReasonId;
+    public ?int $createdBy;
+    public ?int $updatedBy;
+    public ?int $createdAt;
+    public ?int $updatedAt;
+    public ?int $closedAt;
+    public ?int $closestTaskAt;
+    public ?bool $isDeleted;
+    public ?array $customFieldsValues;
+    public ?int $score;
+    public ?int $accountId;
+    public ?int $laborCost;
+    public ?bool $isPriceComputed;
+    public ?array $links;
+    public ?array $embedded;
     
     public function __construct(array $data = [])
     {
-        $this->hydrate($data);
-    }
-    
-    public function hydrate(array $data): self
-    {
-        foreach ($data as $key => $value) {
-            $this->attributes[$key] = $value;
-        }
-        
-        return $this;
-    }
-
-    public function __get(string $name): mixed
-    {
-        return $this->attributes[$name] ?? null;
-    }
-
-    public function __set(string $name, mixed $value): void
-    {
-        $this->attributes[$name] = $value;
-    }
-
-    public function __isset(string $name): bool
-    {
-        return isset($this->attributes[$name]);
+        $this->id = $data['id'] ?? null;
+        $this->name = $data['name'] ?? null;
+        $this->price = $data['price'] ?? null;
+        $this->priceWithMinorUnits = $data['price_with_minor_units'] ?? null;
+        $this->responsibleUserId = $data['responsible_user_id'] ?? null;
+        $this->groupId = $data['group_id'] ?? null;
+        $this->statusId = $data['status_id'] ?? null;
+        $this->pipelineId = $data['pipeline_id'] ?? null;
+        $this->lossReasonId = $data['loss_reason_id'] ?? null;
+        $this->createdBy = $data['created_by'] ?? null;
+        $this->updatedBy = $data['updated_by'] ?? null;
+        $this->createdAt = $data['created_at'] ?? null;
+        $this->updatedAt = $data['updated_at'] ?? null;
+        $this->closedAt = $data['closed_at'] ?? null;
+        $this->closestTaskAt = $data['closest_task_at'] ?? null;
+        $this->isDeleted = $data['is_deleted'] ?? null;
+        $this->customFieldsValues = $data['custom_fields_values'] ?? null;
+        $this->score = $data['score'] ?? null;
+        $this->laborCost = $data['labor_cost'] ?? null;
+        $this->isPriceComputed = $data['is_price_computed'] ?? null;
+        $this->accountId = $data['account_id'] ?? null;
+        $this->links = $data['_links'] ?? null;
+        $this->embedded = $data['_embedded'] ?? null;
     }
 
     /**
@@ -65,7 +61,31 @@ class LeadModel
      */
     public function toArray(): array
     {
-        return $this->attributes;
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'price' => $this->price,
+            'price_with_minor_units' => $this->priceWithMinorUnits,
+            'responsible_user_id' => $this->responsibleUserId,
+            'group_id' => $this->groupId,
+            'status_id' => $this->statusId,
+            'pipeline_id' => $this->pipelineId,
+            'loss_reason_id' => $this->lossReasonId,
+            'created_by' => $this->createdBy,
+            'updated_by' => $this->updatedBy,
+            'created_at' => $this->createdAt,
+            'updated_at' => $this->updatedAt,
+            'closed_at' => $this->closedAt,
+            'closest_task_at' => $this->closestTaskAt,
+            'is_deleted' => $this->isDeleted,
+            'custom_fields_values' => $this->customFieldsValues,
+            'score' => $this->score,
+            'account_id' => $this->accountId,
+            'labor_cost' => $this->laborCost,
+            'is_price_computed' => $this->isPriceComputed,
+            '_links' => $this->links,
+            '_embedded' => $this->embedded,
+        ];
     }
 
     /**
@@ -74,7 +94,7 @@ class LeadModel
      */
     public function getTags(): array
     {
-        return $this->_embedded['tags'] ?? [];
+        return $this->embedded['tags'] ?? [];
     }
 
     /**
@@ -98,22 +118,22 @@ class LeadModel
     }
 
     /**
-     * Получить связанную компанию
+     * Получить ID связанных контактов
      * @return array
      */
-    public function getCompany(): array
+    public function getContactIds(): array
     {
-        return $this->_embedded['companies'] ?? [];
+        $contacts = $this->embedded['contacts'] ?? [];
+        return array_column($contacts, 'id');
     }
 
     /**
      * Получить ID связанной компании
-     * @return array
+     * @return ?int
      */
-    public function getCompanyIds(): array
+    public function getCompanyId(): ?int
     {
-        $companies = $this->getCompany();
-        return array_column($companies, 'id');
+        return $this->embedded['companies'][0]['id'] ?? null;
     }
 
     /**
@@ -122,7 +142,7 @@ class LeadModel
      */
     public function getCustomFields(): array
     {
-        return $this->custom_fields_values ?? [];
+        return $this->customFieldsValues ?? [];
     }
 
     /**

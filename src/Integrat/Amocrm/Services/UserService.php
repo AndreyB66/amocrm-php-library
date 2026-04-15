@@ -32,24 +32,24 @@ class UserService
     {
         $allActiveUsers = [];
         $page = 1;
+        $limit = 250;
         
-        while ($page < 15) {
-            $result = $this->request->get("/users?page={$page}&limit=250");
+        while (true) {
+            $result = $this->request->get("/users?page={$page}&limit={$limit}");
             
+            // Если ответ пустой или нет пользователей - выходим
             if (empty($result) || empty($result['_embedded']['users'])) {
                 break;
             }
             
+            // Фильтруем только активных пользователей
             foreach ($result['_embedded']['users'] as $user) {
-                // Пропускаем деактивированных пользователей
-                if (isset($user['rights']['is_active']) && $user['rights']['is_active'] == false) {
-                    continue;
+                if (isset($user['rights']['is_active']) && $user['rights']['is_active'] === true) {
+                    $allActiveUsers[] = $user;
                 }
-                
-                $allActiveUsers[] = $user;
             }
             
-            // Проверяем наличие следующей страницы
+            // Проверяем наличие следующей страницы через _links
             if (empty($result['_links']['next'])) {
                 break;
             }

@@ -40,9 +40,6 @@ class Request
             if (!empty($data)) {
                 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
             }
-        } elseif ($method === 'GET' && !empty($data)) {
-            $url .= '?' . http_build_query($data);
-            curl_setopt($ch, CURLOPT_URL, $url);
         }
 
         // Пробуем 3 раза с задержкой
@@ -50,24 +47,23 @@ class Request
             $response = curl_exec($ch);
             $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-            // Логируем ответ
-            // error_log(print_r(curl_getinfo($ch), true));
-            // error_log(print_r($response, true));
-
-            if ($httpCode == 400 || $httpCode == 401 || $httpCode == 403) {
-                throw new \Exception(print_r($response, true));
+            // Клиентские ошибки (4xx) и ошибки сервера (5xx) сразу прерываем
+            if ($httpCode >= 400) {
+                curl_close($ch);
+                throw new \Exception("HTTP {$httpCode}: " . $response);
             }
 
-            if ($response !== false && $httpCode < 500) {
+            // Успешный ответ
+            if ($response !== false) {
                 curl_close($ch);
                 return json_decode($response, true);
             }
             
-            sleep(2); // ждем 2 секунды перед повтором
+            sleep(2);
         }
-        
+
         curl_close($ch);
-        return null;
+        throw new \Exception("Было сделано 3 попытки к API amoCRM, которые закончились неудачей: {$method} {$endpoint}");
     }
 
     public function post(string $endpoint, array $data): ?array
@@ -75,9 +71,9 @@ class Request
         return $this->send('POST', $endpoint, $data);
     }
 
-    public function get(string $endpoint, array $params = []): ?array
+    public function get(string $endpoint): ?array
     {
-        return $this->send('GET', $endpoint, $params);
+        return $this->send('GET', $endpoint);
     }
 
     public function patch(string $endpoint, array $data): ?array

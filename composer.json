@@ -4,7 +4,8 @@
     "type": "library",
     "autoload": {
         "psr-4": {
-            "Integrat\\Amocrm\\": "src/Integrat/Amocrm/"
+            "Integrat\\Amocrm\\": "src/Integrat/Amocrm/",
+            "Tests\\": "tests/"
         }
     },
     "require": {

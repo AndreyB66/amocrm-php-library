@@ -2,52 +2,39 @@
 
 namespace Integrat\Amocrm\Models;
 
-/**
- * @property int $id
- * @property string $name
- * @property int $responsible_user_id
- * @property int $group_id
- * @property int $created_by
- * @property int $updated_by
- * @property int $created_at
- * @property int $updated_at
- * @property int|null $closest_task_at
- * @property bool $is_deleted
- * @property array $custom_fields_values
- * @property int $account_id
- * @property array $_embedded
- */
 class CompanyModel
 {
-    private array $attributes = [];
+    public ?int $id;
+    public ?string $name;
+    public ?int $responsibleUserId;
+    public ?int $groupId;
+    public ?int $createdBy;
+    public ?int $updatedBy;
+    public ?int $createdAt;
+    public ?int $updatedAt;
+    public ?int $closestTaskAt;
+    public ?bool $isDeleted;
+    public ?array $customFieldsValues;
+    public ?int $accountId;
+    public ?array $links;
+    public ?array $embedded;
     
     public function __construct(array $data = [])
     {
-        $this->hydrate($data);
-    }
-    
-    public function hydrate(array $data): self
-    {
-        foreach ($data as $key => $value) {
-            $this->attributes[$key] = $value;
-        }
-        
-        return $this;
-    }
-
-    public function __get(string $name): mixed
-    {
-        return $this->attributes[$name] ?? null;
-    }
-
-    public function __set(string $name, mixed $value): void
-    {
-        $this->attributes[$name] = $value;
-    }
-
-    public function __isset(string $name): bool
-    {
-        return isset($this->attributes[$name]);
+        $this->id = $data['id'] ?? null;
+        $this->name = $data['name'] ?? null;
+        $this->responsibleUserId = $data['responsible_user_id'] ?? null;
+        $this->groupId = $data['group_id'] ?? null;
+        $this->createdBy = $data['created_by'] ?? null;
+        $this->updatedBy = $data['updated_by'] ?? null;
+        $this->createdAt = $data['created_at'] ?? null;
+        $this->updatedAt = $data['updated_at'] ?? null;
+        $this->closestTaskAt = $data['closest_task_at'] ?? null;
+        $this->isDeleted = $data['is_deleted'] ?? false;
+        $this->customFieldsValues = $data['custom_fields_values'] ?? null;
+        $this->accountId = $data['account_id'] ?? null;
+        $this->links = $data['_links'] ?? null;
+        $this->embedded = $data['_embedded'] ?? null;
     }
 
     /**
@@ -56,7 +43,22 @@ class CompanyModel
      */
     public function toArray(): array
     {
-        return $this->attributes;
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'responsible_user_id' => $this->responsibleUserId,
+            'group_id' => $this->groupId,
+            'created_by' => $this->createdBy,
+            'updated_by' => $this->updatedBy,
+            'created_at' => $this->createdAt,
+            'updated_at' => $this->updatedAt,
+            'closest_task_at' => $this->closestTaskAt,
+            'is_deleted' => $this->isDeleted,
+            'custom_fields_values' => $this->customFieldsValues,
+            'account_id' => $this->accountId,
+            '_links' => $this->links,
+            '_embedded' => $this->embedded,
+        ];
     }
 
     /**
@@ -65,7 +67,7 @@ class CompanyModel
      */
     public function getTags(): array
     {
-        return $this->_embedded['tags'] ?? [];
+        return $this->embedded['tags'] ?? [];
     }
 
     /**
@@ -89,12 +91,32 @@ class CompanyModel
     }
 
     /**
+     * Получить ID связанных сделок
+     * @return array
+     */
+    public function getLeadIds(): array
+    {
+        $leads = $this->embedded['leads'] ?? [];
+        return array_column($leads, 'id');
+    }
+
+    /**
+     * Получить ID связанных контактов
+     * @return array
+     */
+    public function getContactIds(): array
+    {
+        $contacts = $this->embedded['contacts'] ?? [];
+        return array_column($contacts, 'id');
+    }
+
+    /**
      * Получить все кастомные поля
      * @return array
      */
     public function getCustomFields(): array
     {
-        return $this->custom_fields_values ?? [];
+        return $this->customFieldsValues ?? [];
     }
 
     /**
