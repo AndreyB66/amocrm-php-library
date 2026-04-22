@@ -24,11 +24,13 @@ class LinkService
 
         $result = $this->request->post('/contacts/' . $contactId . '/link', $data);
 
-        if (!empty($result)) {
-            return $result;
+        if (empty($result['_embedded']['links'][0]['entity_id'])) {
+            throw new \Exception(
+                "Не удалось привязать контакт $contactId к сделке $leadId"
+            );
         }
 
-        return [];
+        return $result;
     }
 
     public function linkContactToCompany(int $contactId, int $companyId): array
@@ -42,11 +44,13 @@ class LinkService
 
         $result = $this->request->post('/contacts/' . $contactId . '/link', $data);
 
-        if (!empty($result)) {
-            return $result;
+        if (empty($result['_embedded']['links'][0]['entity_id'])) {
+            throw new \Exception(
+                "Не удалось привязать контакт $contactId к компании $companyId"
+            );
         }
 
-        return [];
+        return $result;
     }
 
     public function linkLeadToContact(int $leadId, int $contactId): array
@@ -60,11 +64,13 @@ class LinkService
 
         $result = $this->request->post('/leads/' . $leadId . '/link', $data);
 
-        if (!empty($result)) {
-            return $result;
+        if (empty($result['_embedded']['links'][0]['entity_id'])) {
+            throw new \Exception(
+                "Не удалось привязать сделку $leadId к контакту $contactId"
+            );
         }
 
-        return [];
+        return $result;
     }
 
     public function linkLeadToCompany(int $leadId, int $companyId): array
@@ -78,11 +84,13 @@ class LinkService
 
         $result = $this->request->post('/leads/' . $leadId . '/link', $data);
 
-        if (!empty($result)) {
-            return $result;
+        if (empty($result['_embedded']['links'][0]['entity_id'])) {
+            throw new \Exception(
+                "Не удалось привязать сделку $leadId к компании $companyId"
+            );
         }
 
-        return [];
+        return $result;
     }
 
     public function linkCompanyToLead(int $companyId, int $leadId): array
@@ -96,11 +104,13 @@ class LinkService
 
         $result = $this->request->post('/companies/' . $companyId . '/link', $data);
 
-        if (!empty($result)) {
-            return $result;
+        if (empty($result['_embedded']['links'][0]['entity_id'])) {
+            throw new \Exception(
+                "Не удалось привязать компанию $companyId к сделке $leadId"
+            );
         }
 
-        return [];
+        return $result;
     }
 
     public function linkCompanyToContact(int $companyId, int $contactId): array
@@ -114,44 +124,46 @@ class LinkService
 
         $result = $this->request->post('/companies/' . $companyId . '/link', $data);
 
-        if (!empty($result)) {
-            return $result;
+        if (empty($result['_embedded']['links'][0]['entity_id'])) {
+            throw new \Exception(
+                "Не удалось привязать компанию $companyId к контакту $contactId"
+            );
         }
 
-        return [];
+        return $result;
     }
 
     public function getLeadLinks(int $id): array
     {
         $result = $this->request->get('/leads/' . $id . '/links');
 
-        if (!empty($result)) {
-            return $result;
+        if (empty($result['_embedded']['links'][0]['entity_id'])) {
+            return [];
         }
 
-        return [];
+        return $result;
     }
 
     public function getContactLinks(int $id): array
     {
         $result = $this->request->get('/contacts/' . $id . '/links');
 
-        if (!empty($result)) {
-            return $result;
+        if (empty($result['_embedded']['links'][0]['entity_id'])) {
+            return [];
         }
 
-        return [];
+        return $result;
     }
 
     public function getCompanyLinks(int $id): array
     {
         $result = $this->request->get('/companies/' . $id . '/links');
 
-        if (!empty($result)) {
-            return $result;
+        if (empty($result['_embedded']['links'][0]['entity_id'])) {
+            return [];
         }
 
-        return [];
+        return $result;
     }
 
     public function unlinkContactToLead(int $contactId, int $leadId): void

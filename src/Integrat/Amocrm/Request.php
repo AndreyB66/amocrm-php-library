@@ -50,7 +50,7 @@ class Request
             // Клиентские ошибки (4xx) и ошибки сервера (5xx) сразу прерываем
             if ($httpCode >= 400) {
                 curl_close($ch);
-                throw new \Exception("HTTP {$httpCode}: " . $response);
+                throw new \Exception("HTTP $httpCode: " . $response);
             }
 
             // Успешный ответ

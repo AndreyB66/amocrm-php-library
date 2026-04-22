@@ -1,8 +1,8 @@
 <?php
 
 $excludeDirs = [
-    'vendor',
     '.git',
+    'vendor',
 ];
 
 $excludeFiles = [
@@ -11,7 +11,6 @@ $excludeFiles = [
     'composer.lock',
     '.env',
     'README.md',
-    'php_errors.log',
 ];
 
 // Убираем ограничения времени выполнения и памяти
