@@ -47,10 +47,16 @@ class Request
             $response = curl_exec($ch);
             $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
+            // 404 при GET-запросах - возвращаем пустой массив
+            if ($httpCode === 404 && $method === 'GET') {
+                curl_close($ch);
+                return [];
+            }
+
             // Клиентские ошибки (4xx) и ошибки сервера (5xx) сразу прерываем
             if ($httpCode >= 400) {
                 curl_close($ch);
-                throw new \Exception("HTTP $httpCode: " . $response);
+                throw new \Exception("HTTP $httpCode: $response");
             }
 
             // Успешный ответ
