@@ -8,24 +8,24 @@
     "autoload": {
         "psr-4": {
             "App\\": "app/",
-            "Integrat\\Amocrm\\": "vendor/integrat/amocrm-library/src/Integrat/Amocrm/"
+            "Integrat\\Amocrm\\": "vendor/integrat/amocrm-php-library/src/Integrat/Amocrm/"
         }
     },
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/AndreyB66/amocrm-library.git"
+            "url": "https://github.com/AndreyB66/amocrm-php-library.git"
         }
     ],
     "require": {
-        "integrat/amocrm-library": "*"
+        "integrat/amocrm-php-library": "*"
     }
 }
 ```
 
 </details>
 
-Или выполните пошагово:
+Шаблон:
 
 **1. Добавьте репозиторий в `composer.json`:**
 ```json
@@ -33,17 +33,17 @@
     "autoload": {
         "psr-4": {
             "App\\": "app/",
-            "Integrat\\Amocrm\\": "vendor/integrat/amocrm-library/src/Integrat/Amocrm/"
+            "Integrat\\Amocrm\\": "vendor/integrat/amocrm-php-library/src/Integrat/Amocrm/"
         }
     },
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/AndreyB66/amocrm-library.git"
+            "url": "https://github.com/AndreyB66/amocrm-php-library.git"
         }
     ],
     "require": {
-        "integrat/amocrm-library": "*"
+        "integrat/amocrm-php-library": "*"
     }
 }
 ```
