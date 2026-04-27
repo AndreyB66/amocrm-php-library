@@ -7,11 +7,13 @@ use GuzzleHttp\Client;
 class Request
 {
     private Client $httpClient;
+    private string $baseUrl;
 
     public function __construct(string $domain, string $apiKey)
     {
+        $this->baseUrl = 'https://' . $domain . '/api/v4';
+
         $this->httpClient = new Client([
-            'base_uri' => 'https://' . $domain . '/api/v4/',
             'timeout'  => 30,
             'connect_timeout' => 10,
             'verify' => false,
@@ -40,6 +42,9 @@ class Request
             try {
                 $response = $this->httpClient->request($method, $endpoint, $options);
                 $statusCode = $response->getStatusCode();
+                $body = $response->getBody()->getContents();
+
+                // error_log("amoCRM Response [{$method} {$endpoint}]: Status: {$statusCode}, Body: " . substr($body, 0, 1000));
 
                 if ($statusCode === 404) {
                     return null;
@@ -50,15 +55,14 @@ class Request
                 }
 
                 if ($statusCode >= 200 && $statusCode < 300) {
-                    $body = $response->getBody()->getContents();
                     $decoded = json_decode($body, true);
-                    
+
                     if (json_last_error() !== JSON_ERROR_NONE) {
                         throw new \Exception(
                             "Ошибка декодирования JSON: " . json_last_error_msg()
                         );
                     }
-                    
+
                     return $decoded;
                 }
 
@@ -83,16 +87,16 @@ class Request
 
     public function post(string $endpoint, array $data): ?array
     {
-        return $this->send('POST', $endpoint, $data);
+        return $this->send('POST', $this->baseUrl . $endpoint, $data);
     }
 
     public function get(string $endpoint): ?array
     {
-        return $this->send('GET', $endpoint);
+        return $this->send('GET', $this->baseUrl . $endpoint);
     }
 
     public function patch(string $endpoint, array $data): ?array
     {
-        return $this->send('PATCH', $endpoint, $data);
+        return $this->send('PATCH', $this->baseUrl . $endpoint, $data);
     }
 }

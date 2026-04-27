@@ -111,7 +111,7 @@ class CompanyRepository extends AbstractRepository
      * @param array $closedStatusIds
      * @return LeadModel[]
      */
-    public function findActiveLeads(int $companyId, array $closedStatusIds = []): array
+    public function findActiveLeads(int $companyId, array $closedStatusIds = [142, 143]): array
     {
         $leads = $this->findAllLeads($companyId);
         
@@ -119,7 +119,10 @@ class CompanyRepository extends AbstractRepository
             return $leads;
         }
         
-        return array_filter($leads, fn($lead) => !in_array($lead->status_id, $closedStatusIds));
+        return array_filter($leads, function($lead) use ($closedStatusIds) {
+            /** @var LeadModel $lead */
+            return !in_array($lead->statusId, $closedStatusIds);
+        });
     }
 
     /**
