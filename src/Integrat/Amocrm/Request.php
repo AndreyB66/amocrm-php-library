@@ -3,7 +3,6 @@
 namespace Integrat\Amocrm;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
 
 class Request
 {
@@ -22,7 +21,7 @@ class Request
                 'Accept' => 'application/json',
             ],
             'http_errors' => false,
-            'debug' => true,
+            'debug' => false,
         ]);
     }
 
@@ -33,34 +32,53 @@ class Request
             $options['json'] = $data;
         }
 
-        for ($i = 0; $i < 3; $i++) {
+        $lastException = null;
+        $maxAttempts = 3;
+        $retryDelay = 2;
+
+        for ($i = 0; $i < $maxAttempts; $i++) {
             try {
                 $response = $this->httpClient->request($method, $endpoint, $options);
                 $statusCode = $response->getStatusCode();
 
-                // Обработка 404
                 if ($statusCode === 404) {
+                    return null;
+                }
+
+                if ($statusCode === 204) {
                     return [];
                 }
 
-                // Успешный ответ (2xx)
-                $body = $response->getBody()->getContents();
-                return json_decode($body, true);
-
-            } catch (TransferException $e) {
-                if ($i === 2) {
-                    // Это была последняя попытка
-                    throw new \Exception(
-                        "Было сделано 3 попытки к API amoCRM, которые закончились неудачей: {$method} {$endpoint}. "
-                        . "Ошибка: " . $e
-                    );
+                if ($statusCode >= 200 && $statusCode < 300) {
+                    $body = $response->getBody()->getContents();
+                    $decoded = json_decode($body, true);
+                    
+                    if (json_last_error() !== JSON_ERROR_NONE) {
+                        throw new \Exception(
+                            "Ошибка декодирования JSON: " . json_last_error_msg()
+                        );
+                    }
+                    
+                    return $decoded;
                 }
-                sleep(2);
+
+                throw new \Exception("Неожиданный статус код: {$statusCode}");
+
+            } catch (\Exception $e) {
+                $lastException = $e;
+                if ($i >= $maxAttempts - 1) {
+                    break;
+                }
+                sleep($retryDelay);
             }
         }
 
-        // Этот код не должен выполняться, но на всякий случай
-        throw new \Exception("Неизвестная ошибка при запросе: {$method} {$endpoint}");
+        throw new \Exception(
+            "Было сделано {$maxAttempts} попыток к API amoCRM, которые закончились неудачей: {$method} {$endpoint}. "
+            . "Последняя ошибка: " . ($lastException ? $lastException->getMessage() : 'неизвестна'),
+            0,
+            $lastException
+        );
     }
 
     public function post(string $endpoint, array $data): ?array
